@@ -40,6 +40,12 @@ if [ -z "${POSITIONAL_ARGS[0]}" ]; then
   exit 0
 fi
 
+# Use gdb-multiarch on Ubuntu, gdb on other distributions
+
+GDB=gdb
+if grep -q Ubuntu /etc/os-release; then
+  GDB="gdb-multiarch"
+fi
 
 # Find an unused port
 while
@@ -55,7 +61,7 @@ SOURCE_FILE="${POSITIONAL_ARGS[0]}"
 arm-linux-gnueabi-gcc -static -g "${SOURCE_FILE}"
 
 # Launch qemu
-qemu-arm -g "${PORT}" a.out &
+qemu-arm -L /usr/arm-linux-gnueabi -g "${PORT}" a.out &
 
 # Attach gdb to qemu
-gdb a.out -q -ex "target remote localhost:${PORT}" -ex "tui reg general" -ex "advance ${ADVANCE}"
+${GDB} a.out -q -ex "target remote localhost:${PORT}" -ex "tui reg general" -ex "advance ${ADVANCE}"

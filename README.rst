@@ -17,6 +17,7 @@ Required software
 
 - arm-linux-gnueabi-gcc
 - gdb
+- gdb-multiarch (for Ubuntu)
 - qemu-arm
 
 Usage
